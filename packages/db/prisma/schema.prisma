@@ -1,0 +1,46 @@
+// The data model for the entire app. Boilerplate — empty schema with no models.
+// Example branches add their own models, enums, and migrations here.
+
+generator client {
+  provider        = "prisma-client-js"
+  engineType      = "library"
+  previewFeatures = ["driverAdapters"]
+  output          = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id        String   @id @default(uuid())
+  email     String   @unique
+  name      String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  wins      Win[]
+}
+
+enum Category {
+  FITNESS
+  ACADEMIC
+  CAREER
+  PERSONAL
+}
+
+model Win {
+  id         String   @id @default(uuid())
+  photoUrl   String?
+  reflection String
+  category   Category
+  latitude   Float
+  longitude  Float
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  userId     String
+  user       User     @relation(fields: [userId], references: [id])
+}
