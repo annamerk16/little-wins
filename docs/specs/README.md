@@ -41,6 +41,12 @@ store issue state. See [CONTRIBUTING](../../CONTRIBUTING.md) for the full arc.
 | [thumbnail](items/thumbnail.md) | feature | Worker thumbnail generation with sharp, queue pipeline | 0006, 0007, 0008 |
 | [live-progress](items/live-progress.md) | feature | SSE live progress for thumbnail pipeline, pg_notify fan-out | 0007, 0005 |
 
+### Wins domain (`wins/`)
+
+| Doc | Type | What it covers | Key ADRs |
+|---|---|---|---|
+| [list](wins/list.md) | feature | List the current user's wins, optionally filtered by category | 0009, 0003 |
+
 Feature specs live under `docs/specs/<domain>/`, grouped by the domain they
 describe. In this template repo the `items/` domain is a worked demonstration;
 an application built from this template keeps its own domains on `main`.

@@ -3,13 +3,10 @@
 Zod validation schemas and database queries. Used only by the web app — the
 worker has no reason to validate user input or run web-queries.
 
-**Boilerplate:** empty barrel. Example branches add their own schemas and
-query functions here, following the web-only convention.
-
 ## Public API
 
-All exports come from `src/index.ts`. Currently empty — example branches
-export their schemas and queries from here.
+`src/index.ts` exports `categorySchema`, `WinCategory`, and `listWins` for
+listing a user's wins with an optional category filter.
 
 ## Dependencies
 
