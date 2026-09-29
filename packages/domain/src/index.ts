@@ -16,3 +16,9 @@ export async function listWins(input: {
     orderBy: { createdAt: "desc" },
   });
 }
+
+export async function getWin(input: { userId: string; id: string }) {
+  return prisma.win.findFirst({
+    where: { id: input.id, userId: input.userId },
+  });
+}
