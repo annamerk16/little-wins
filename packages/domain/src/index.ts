@@ -22,3 +22,11 @@ export async function getWin(input: { userId: string; id: string }) {
     where: { id: input.id, userId: input.userId },
   });
 }
+
+export async function deleteWin(input: { userId: string; id: string }) {
+  const result = await prisma.win.deleteMany({
+    where: { id: input.id, userId: input.userId },
+  });
+
+  return result.count === 1;
+}
