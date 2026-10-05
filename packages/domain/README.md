@@ -5,8 +5,8 @@ worker has no reason to validate user input or run web-queries.
 
 ## Public API
 
-`src/index.ts` exports `categorySchema`, `WinCategory`, and `listWins` for
-listing a user's wins with an optional category filter.
+`src/index.ts` exports `categorySchema` and `WinCategory` plus user-scoped
+`listWins`, `getWin`, and `deleteWin` database operations.
 
 ## Dependencies
 
