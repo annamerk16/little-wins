@@ -22,3 +22,25 @@ export async function getWin(input: { userId: string; id: string }) {
     where: { id: input.id, userId: input.userId },
   });
 }
+export const CreateWin = z.object({
+  reflection: z.string().trim().min(1, "Reflection is required").max(500, "Keep it under 500 characters"),
+  category: categorySchema,
+  latitude: z.number(),
+  longitude: z.number(),
+  photoUrl: z.string().url().optional(),
+});
+
+export type CreateWinInput = z.infer<typeof CreateWin>;
+
+export async function createWin(input: { userId: string } & CreateWinInput) {
+  return prisma.win.create({
+    data: {
+      userId: input.userId,
+      reflection: input.reflection,
+      category: input.category,
+      latitude: input.latitude,
+      longitude: input.longitude,
+      photoUrl: input.photoUrl,
+    },
+  });
+}
