@@ -44,5 +44,5 @@ supplied. Foreign and absent ids are deliberately indistinguishable, per
 
 ## Out of scope
 
-Editing, deleting, and photo upload for a single win — separate endpoints,
-not yet specified.
+Editing and photo upload for a single win are not yet specified. Deletion is
+specified in [delete.md](delete.md).

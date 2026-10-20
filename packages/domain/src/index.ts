@@ -22,6 +22,7 @@ export async function getWin(input: { userId: string; id: string }) {
     where: { id: input.id, userId: input.userId },
   });
 }
+
 export const CreateWin = z.object({
   reflection: z.string().trim().min(1, "Reflection is required").max(500, "Keep it under 500 characters"),
   category: categorySchema,
@@ -43,4 +44,12 @@ export async function createWin(input: { userId: string } & CreateWinInput) {
       photoUrl: input.photoUrl,
     },
   });
+}
+
+export async function deleteWin(input: { userId: string; id: string }) {
+  const result = await prisma.win.deleteMany({
+    where: { id: input.id, userId: input.userId },
+  });
+
+  return result.count === 1;
 }

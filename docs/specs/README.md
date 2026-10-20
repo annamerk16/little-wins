@@ -47,6 +47,7 @@ store issue state. See [CONTRIBUTING](../../CONTRIBUTING.md) for the full arc.
 |---|---|---|---|
 | [list](wins/list.md) | feature | List the current user's wins, optionally filtered by category | 0009, 0003 |
 | [create](wins/create.md) | feature | Create a win with Zod validation, scoped to the current user | 0009, 0003 |
+| [delete](wins/delete.md) | feature | Permanently delete one of the current user's wins | 0009, 0003 |
 
 Feature specs live under `docs/specs/<domain>/`, grouped by the domain they
 describe. In this template repo the `items/` domain is a worked demonstration;
