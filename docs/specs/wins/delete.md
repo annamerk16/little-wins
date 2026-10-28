@@ -73,6 +73,22 @@ deleting that row.
 - There is no Win history model, so this operation does not create a history
   event or require a schema migration.
 
+## Confirm dialog
+
+`apps/web/components/DeleteWinDialog.tsx` is the confirmation step before a win is deleted. It uses the native `<dialog>` element opened with `showModal()` (APG Dialog (Modal) pattern). A temporary demo lives at `/sandbox/delete-confirm` until the timeline imports it.
+
+| Key / action | Result |
+|---|---|
+| Enter on "Delete" | Dialog opens, focus moves to "Cancel" |
+| Tab / Shift+Tab | Focus cycles inside the dialog only |
+| Escape or "Cancel" | Dialog closes, focus returns to the "Delete" trigger |
+| Confirm | Both buttons disable and show "Deleting…"; on success the dialog closes |
+| Confirm fails | Dialog stays open with an error (`role="alert"`) and the buttons re-enable |
+
+The dialog is named by its heading (`aria-labelledby`) and described by its message (`aria-describedby`). The trigger carries visually hidden text so its accessible name says which win it deletes.
+
+Verify: open `/sandbox/delete-confirm` and walk the table above using only the keyboard, then repeat the open and Escape rows with a screen reader.
+
 ## Out of scope
 
 Undo or recovery, bulk deletion, deleting photo storage, editing wins, and user
