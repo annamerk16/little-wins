@@ -63,9 +63,9 @@ Form decisions:
 
 `LogWinDialog` renders a **Log a win** button. Pressing it opens a modal dialog (native `<dialog>`, `showModal()`) that holds the form for `POST /api/wins`. The dialog is named by its heading (`aria-labelledby`), focus moves to the Reflection field on open, Tab cycles inside it only, and Escape or **Cancel** closes it and returns focus to the trigger.
 
-The form has three inputs: **Reflection** (textarea, 1–500 characters after trimming), **Category** (select: Fitness, Academic, Career, Personal), and **Location** (set by a "Use my location" button that calls `navigator.geolocation.getCurrentPosition`). Location is never requested until the user presses that button.
+The form has three inputs: **Reflection** (textarea, 1–500 characters after trimming), **Category** (select: Fitness, Academic, Career, Personal), and **Location** (set by a "Use my location" button that calls `navigator.geolocation.getCurrentPosition`). Location is never requested until the user presses that button. Once set, the button is replaced by a "Location added" card with an "Update location" action.
 
-Submit is blocked until reflection, category, and location are all valid. Field errors appear on blur or submit, are linked to their field with `aria-describedby`, and the first invalid field receives focus on a blocked submit.
+Submit is blocked until reflection, category, and location are all valid. Reflection and category errors appear only on submit. Errors are linked to their field with `aria-describedby`, and the first invalid field receives focus on a blocked submit.
 
 On submit the form sends `{ reflection, category, latitude, longitude }`. While the request is in flight every input, Cancel, and the submit button are disabled, the button reads "Saving…", and Escape does not close the dialog. Success closes the dialog, clears the draft, returns focus to the trigger, and announces "Win logged." in a `role="status"` region that sits outside the dialog. A failure keeps the dialog open and every entered value, shows the server's `error.message` (or a generic message for network failure) in a `role="alert"` region, and re-enables the form. The form never sends `userId`, `id`, or timestamps.
 
