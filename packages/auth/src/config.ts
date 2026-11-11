@@ -86,7 +86,10 @@ export async function verifiedSession(auth: Authentication, headers: Headers) {
   }
 }
 
-const PRIVATE_PATHS = new Set(["/", "/sandbox/timeline", "/sandbox/category-filter", "/sandbox/delete-confirm"]);
+const PRIVATE_PATHS = new Set([
+  "/", "/timeline", "/map", "/recap", "/profile",
+  "/sandbox/timeline", "/sandbox/category-filter", "/sandbox/delete-confirm",
+]);
 export function safeReturnPath(value: unknown): string {
   return typeof value === "string" && PRIVATE_PATHS.has(value) ? value : "/";
 }

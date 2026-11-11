@@ -282,7 +282,7 @@ describe("real password authentication and database sessions", () => {
 
 describe("GitHub protocol boundary with real OAuth state and persistence", () => {
   async function githubFlow(profile: { id: number; email: string; name?: string }, options?: {
-    denied?: boolean; tampered?: boolean; noEmail?: boolean; failedExchange?: boolean;
+    denied?: boolean; tampered?: boolean; noEmail?: boolean; failedExchange?: boolean; returnTo?: string;
   }) {
     const githubEnv = { ...env, github: { clientId: "fixture-client", clientSecret: "fixture-secret" } };
     const githubAuth = createAuthentication(db, githubEnv);
@@ -301,7 +301,8 @@ describe("GitHub protocol boundary with real OAuth state and persistence", () =>
       }
       throw new Error("Unexpected provider request");
     }));
-    const start = await call("/sign-in/social", { provider: "github" }, "", githubAuth, githubEnv);
+    const startPath = `/sign-in/social?${new URLSearchParams({ returnTo: options?.returnTo ?? "/" })}`;
+    const start = await call(startPath, { provider: "github" }, "", githubAuth, githubEnv);
     expect(start.status, await start.clone().text()).toBe(200);
     const state = new URL((await start.json()).url).searchParams.get("state")!;
     expect(state).toBeTruthy();
@@ -333,6 +334,13 @@ describe("GitHub protocol boundary with real OAuth state and persistence", () =>
     expect(await db.account.findMany()).toMatchObject([{ providerId: "credential", userId: existing.id }]);
     expect(await db.user.count()).toBe(1);
     expect(result.response.headers.get("location")).toContain("/login");
+  }, 30000);
+
+  it.each(["/timeline", "/map", "/recap", "/profile"])("returns GitHub sign-in to the private %s screen", async (returnTo) => {
+    const result = await githubFlow({ id: 456, email: "sidebar@example.com" }, { returnTo });
+    expect(result.response.status).toBe(302);
+    expect(result.response.headers.get("location")).toBe(`${baseURL}${returnTo}`);
+    expect((await verifiedSession(result.githubAuth, new Headers({ cookie: result.cookie })))?.user.email).toBe("sidebar@example.com");
   }, 30000);
 
   it.each([

@@ -51,7 +51,8 @@ session model. The feature contract is [authentication/sign-in.md](authenticatio
 ## Protected surface and errors
 
 - `/login`, `/register`, `/api/health`, and the necessary auth protocol routes
-  are public. `/` and existing sandbox pages are private; no landing redesign
+  are public. `/`, `/timeline`, `/map`, `/recap`, `/profile`, and existing
+  sandbox pages are private; no landing redesign
   is included. Signed-out private page requests redirect to `/login`.
 - Every wins API returns the existing structured 401 when there is no valid
   session, before validating its body or querying wins. Foreign/absent wins

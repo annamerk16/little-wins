@@ -95,7 +95,8 @@ expired, revoked, missing, and deleted-user sessions authenticate nobody.
 Development headers and identity flags cannot override the result. Auth
 storage outages produce a safe service error rather than a fabricated login.
 
-`/`, sandbox pages, and other private pages check the session on the server
+`/`, `/timeline`, `/map`, `/recap`, `/profile`, sandbox pages, and other
+private pages check the session on the server
 and redirect signed-out users to `/login` with an allowlisted local return
 path. Both direct page requests and private server operations are protected;
 a middleware cookie-presence check is never the sole authorization gate.
@@ -174,6 +175,8 @@ reading or committing secrets or editing `.env` files.
 - Run `pnpm test`, `pnpm test:integration`, `pnpm typecheck`, and `pnpm build`.
   Root integration tests remain an explicit separate command because the
   existing default test script runs workspace tests only.
+  CI runs both commands before building, so the authentication security
+  tests are exercised on every pull request.
 - Run real library/Prisma/PGlite tests for registration, hashing, valid/invalid
   login, duplicate/racing/case-variant signup, persistent sessions, expiry,
   logout revocation, copied-cookie replay, and independent sessions.

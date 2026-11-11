@@ -80,21 +80,21 @@ export default function Timeline({ logWinHref = "/wins/new" }: Props) {
       {loading && (
         <ul aria-hidden="true" className="space-y-3">
           {[0, 1, 2].map((i) => (
-            <li key={i} className="animate-pulse space-y-2 rounded-lg border border-neutral-200 p-4">
-              <div className="h-4 w-3/4 rounded bg-neutral-200" />
-              <div className="h-3 w-1/3 rounded bg-neutral-200" />
+            <li key={i} className="animate-pulse space-y-3 rounded-[22px] bg-[#fdfdfb] p-6 text-[#1e2b1b] shadow-[0_10px_24px_-10px_rgba(30,43,27,0.25),0_0_0_1px_rgba(30,43,27,0.08)]">
+              <div className="h-4 w-3/4 rounded-full bg-[#e9f0e2]" />
+              <div className="h-3 w-1/3 rounded-full bg-[#dce6d3]" />
             </li>
           ))}
         </ul>
       )}
 
       {state.status === "error" && (
-        <div role="alert" className="space-y-3 rounded-lg border border-red-200 bg-red-50 p-4">
-          <p className="text-red-800">Couldn&apos;t load your wins.</p>
+        <div role="alert" className="space-y-4 rounded-[22px] bg-[#fdfdfb] p-6 text-[#1e2b1b] shadow-[0_10px_24px_-10px_rgba(30,43,27,0.25),0_0_0_1px_rgba(30,43,27,0.08)]">
+          <p className="text-[15px] font-semibold text-red-600">Couldn&apos;t load your wins.</p>
           <button
             type="button"
             onClick={() => void load()}
-            className="rounded border border-red-300 bg-white px-3 py-2 hover:bg-red-100"
+            className="cursor-pointer inline-flex min-h-11 items-center rounded-full border border-[#5e6b5a]/60 bg-[#e9f0e2] px-[18px] text-[15px] font-semibold text-[#2b4a27] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2b4a27]"
           >
             Retry
           </button>
@@ -102,11 +102,11 @@ export default function Timeline({ logWinHref = "/wins/new" }: Props) {
       )}
 
       {state.status === "success" && state.wins.length === 0 && (
-        <div className="space-y-3 rounded-lg border border-neutral-200 bg-neutral-50 p-6 text-center">
-          <p className="text-neutral-700">No wins yet</p>
+        <div className="space-y-5 rounded-[22px] bg-[#fdfdfb] p-6 text-[#1e2b1b] shadow-[0_10px_24px_-10px_rgba(30,43,27,0.25),0_0_0_1px_rgba(30,43,27,0.08)] p-8 text-center">
+          <p className="font-display text-[30px] font-extrabold leading-[34px] tracking-[-0.03em]">No wins yet</p>
           <a
             href={logWinHref}
-            className="inline-block rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
+            className="inline-flex min-h-12 items-center rounded-full bg-[#2b4a27] px-6 font-bold text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2b4a27]"
           >
             Log your first win
           </a>
@@ -116,13 +116,15 @@ export default function Timeline({ logWinHref = "/wins/new" }: Props) {
       {state.status === "success" && state.wins.length > 0 && (
         <ul className="space-y-3">
           {state.wins.map((win) => (
-            <li key={win.id} className="space-y-2 rounded-lg border border-neutral-200 p-4">
+            <li key={win.id} className="space-y-3 rounded-[22px] bg-[#fdfdfb] p-6 text-[#1e2b1b] shadow-[0_10px_24px_-10px_rgba(30,43,27,0.25),0_0_0_1px_rgba(30,43,27,0.08)]">
               {win.photoUrl && (
-                <img src={win.photoUrl} alt="" className="max-h-64 w-full rounded object-cover" />
+                <img src={win.photoUrl} alt="" className="max-h-64 w-full rounded-[14px] object-cover" />
               )}
-              <p>{win.reflection}</p>
-              <p className="text-sm text-neutral-600">
-                {CATEGORY_LABELS[win.category] ?? win.category} ·{" "}
+              <p className="text-[17px] leading-7">{win.reflection}</p>
+              <p className="flex items-center gap-3 text-[13px] text-[#556251]">
+                <span className="rounded-full bg-[#e9f0e2] px-3 py-0.5 text-xs font-bold uppercase tracking-[0.08em] text-[#2b4a27]">
+                  {CATEGORY_LABELS[win.category] ?? win.category}
+                </span>
                 <time dateTime={win.createdAt}>
                   {new Date(win.createdAt).toLocaleDateString(undefined, { dateStyle: "medium" })}
                 </time>

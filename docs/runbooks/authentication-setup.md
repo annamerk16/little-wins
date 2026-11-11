@@ -56,6 +56,34 @@ data passed. Live GitHub and keyboard checks remain pending.
 - Database/migration failure: inspect the first error and follow the existing database runbook/spec. Do not delete local data or modify applied migrations.
 - Logout failure: restore database access and retry. Cookie clearing alone is not proof that a copied session has been revoked.
 
+## Before production rollout
+
+1. Review the shared rate-limit bucket with the deployment owner. As shipped,
+   all clients share five password attempts/minute; one caller can therefore
+   temporarily throttle other users. Do not assume the local default is a
+   per-user or per-IP production limit.
+2. Define and test the trusted proxy boundary before configuring an IP header.
+   The proxy must overwrite client-supplied values, and direct access to the
+   application must be blocked. Add reviewed deployment configuration and a
+   spoofing/concurrency drill; do not simply trust arbitrary forwarded headers
+   or disable the limiter. This runbook note does not enable any new trust.
+3. Finish live GitHub approval/denial and keyboard-only checks for login,
+   registration, sidebar navigation, and sign-out before leaving draft.
+
+## Teammate onboarding notice
+
+When the authentication change lands, share the setup-guide link with the
+team and include these facts:
+
+- Set `BETTER_AUTH_SECRET` and `BETTER_AUTH_URL` in the shell launching web;
+  use a stable per-developer secret across restarts. GitHub additionally needs
+  its OAuth client ID/secret pair. Do not share actual secrets in a channel.
+- Register a real account and use a session cookie, plus a matching Origin
+  header, for authenticated curl writes; there is no `demo-user` fallback.
+- Existing local demo-user wins remain intact with their original owner.
+  Registering with a matching email cannot claim them. Do not reset data or
+  reassign ownership as an onboarding shortcut; ownership recovery is follow-up work.
+
 ## Related
 
 - [Authentication feature](../specs/authentication/sign-in.md)
