@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import CategoryFilter, {
   type CategoryFilterValue,
-} from "../../../components/CategoryFilter";
+} from "../../../../components/CategoryFilter";
 
 type Win = {
   id: string;

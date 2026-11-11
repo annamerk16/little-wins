@@ -28,8 +28,9 @@ because the `Win` model has no `deletedAt` field.
 If the id is unknown or belongs to another user, the endpoint returns 404 with
 `{ error: { code: "NOT_FOUND", message: "Win not found" } }`; callers cannot
 distinguish those cases. An unresolved user returns 401 with the shared error
-shape. Unexpected authentication or database failures are logged on the server
-and return 500 without exposing the underlying error.
+shape. Auth storage/configuration unavailability returns 503 `AUTH_UNAVAILABLE`.
+Authenticated writes require a matching Origin header; rejected origins return
+403 `BAD_ORIGIN`. Unexpected win-query/database failures return a safe 500.
 
 ## Examples
 
@@ -40,7 +41,8 @@ and return 500 without exposing the underlying error.
 | The requested id does not exist | 404, `NOT_FOUND` |
 | The same deletion is requested a second time | 404, `NOT_FOUND` |
 | No user id is resolved | 401, `UNAUTHENTICATED` |
-| Authentication or database access fails | 500, `INTERNAL_ERROR`; details are logged only on the server |
+| Auth storage/configuration unavailable | 503, `AUTH_UNAVAILABLE` |
+| Win query/database access fails | 500, `INTERNAL_ERROR`; details are logged only on the server |
 
 ## Verify
 
@@ -53,12 +55,15 @@ pnpm typecheck
 pnpm build
 ```
 
-With the local app running and a known win owned by `demo-user`, send
-`curl.exe -i -X DELETE http://localhost:3000/api/wins/<id> -H "x-user-id: demo-user"`.
+With the local app running and a known win owned by a signed-in user, send
+`curl.exe -i -X DELETE http://localhost:3000/api/wins/<id> -b <cookie-jar> -H "Origin: http://localhost:3000"`
+using that user's real session cookie jar.
 Confirm the first request returns 204 with no body, the win disappears from
 `GET /api/wins`, and repeating the DELETE returns 404. Send the same request
 for a win owned by a different test user and confirm it returns 404 without
-deleting that row.
+deleting that row. Send a request without a valid session cookie and confirm
+the structured 401 response without deletion. Never use identity headers to
+authenticate the drill; see [the auth contract](../auth.md).
 
 ## Constraints & decisions
 

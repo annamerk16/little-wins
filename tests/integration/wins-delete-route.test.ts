@@ -5,10 +5,12 @@ const mocks = vi.hoisted(() => ({
   deleteWin: vi.fn<(input: { userId: string; id: string }) => Promise<boolean>>(),
   getWin: vi.fn(),
   logError: vi.fn(),
+  AuthUnavailableError: class extends Error {},
 }));
 
 vi.mock("../../packages/auth/src/index.ts", () => ({
   currentUserId: mocks.currentUserId,
+  AuthUnavailableError: mocks.AuthUnavailableError,
 }));
 vi.mock("../../packages/domain/src/index.ts", () => ({
   deleteWin: mocks.deleteWin,
@@ -21,7 +23,7 @@ vi.mock("../../packages/log/src/index.ts", () => ({
 import { DELETE } from "../../apps/web/app/api/wins/[id]/route";
 
 function request(id = "win-1") {
-  return DELETE(new Request(`http://localhost/api/wins/${id}`, { method: "DELETE" }), {
+  return DELETE(new Request(`http://localhost/api/wins/${id}`, { method: "DELETE", headers: { origin: "http://localhost" } }), {
     params: Promise.resolve({ id }),
   });
 }

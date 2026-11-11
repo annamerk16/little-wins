@@ -18,6 +18,9 @@ Let users log a win with a reflection, a category, and where it happened.
 `POST /api/wins` validates the JSON body, creates a win owned by the current user, and returns `{ win }` with status 201.
 The client may only send `reflection`, `category`, `latitude`, `longitude`, and an optional `photoUrl`. `id`, `userId`, and timestamps are set by the server.
 Errors use `{ error: { code, message } }`.
+Authenticated writes require a matching Origin header; rejected origins get
+403 `BAD_ORIGIN`. Auth storage/configuration unavailability gets 503
+`AUTH_UNAVAILABLE`; other unexpected database failures retain the shared 500.
 
 ## Endpoint
 
@@ -37,11 +40,16 @@ Errors use `{ error: { code, message } }`.
 
 ## Verify
 
-Run `pnpm test`. Then, with `pnpm dev` running, send a valid POST, a `{}` body, and a non-JSON body, and confirm a GET as a different `x-user-id` does not show the new win.
+Run `pnpm test` and `pnpm test:integration`. With the local app running, sign
+in, send a valid POST, a `{}` body, and a non-JSON body using its session
+cookie, and confirm another signed-in user's cookie does not reveal the new
+win. Include the matching Origin header for CLI writes. Without a valid
+cookie, all of those requests return structured 401.
 
 ## Constraints & decisions
 
-The [dev auth stub](../auth.md) defaults to the demo user when no identity is supplied, and that user must exist in the `User` table for a create to succeed.
+The [auth subsystem](../auth.md) supplies a verified session user. New wins
+belong to that user; no demo-user fallback or client-supplied identity exists.
 
 ## Out of scope
 

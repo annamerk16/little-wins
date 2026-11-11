@@ -31,4 +31,4 @@ Start from [`_template.md`](_template.md).
 
 | Runbook | When |
 |---|---|
-| _(none yet — the first arrives with the deploy machinery)_ | |
+| [Authentication setup](authentication-setup.md) | Configure password/GitHub login or diagnose auth failures |
