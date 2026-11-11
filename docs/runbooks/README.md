@@ -31,4 +31,4 @@ Start from [`_template.md`](_template.md).
 
 | Runbook | When |
 |---|---|
-| _(none yet — the first arrives with the deploy machinery)_ | |
+| [Local development](local-development.md) | Start the local app or diagnose startup and seed failures |

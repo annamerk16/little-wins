@@ -5,6 +5,9 @@ import {
   fail,
   initialTimelineState,
   succeed,
+  removeWin,
+  restoreWin,
+  visibleWins,
   type TimelineWin,
 } from "../../apps/web/components/timeline-state";
 
@@ -74,5 +77,40 @@ describe("timeline state", () => {
   it("cancel is a no-op outside loading", () => {
     const done = succeed(begin(initialTimelineState), 1, [win]);
     expect(cancel(done)).toBe(done);
+  });
+
+  it("a category change or creation refresh supersedes a pending fetch", () => {
+    const old = begin(initialTimelineState);
+    const refreshed = begin(old, true);
+    expect(refreshed.requestId).toBeGreaterThan(old.requestId);
+    expect(succeed(refreshed, old.requestId, [win])).toBe(refreshed);
+    expect(fail(refreshed, old.requestId)).toBe(refreshed);
+    expect(succeed(refreshed, refreshed.requestId, [])).toMatchObject({ status: "success", wins: [] });
+  });
+
+  it("removes optimistically and restores a failed deletion in its original position, including tied dates", () => {
+    const newer = { ...win, id: "newer", createdAt: "2026-10-02T12:00:00.000Z" };
+    const tied = { ...win, id: "tied" };
+    const done = succeed(begin(initialTimelineState), 1, [newer, win, tied]);
+    const removed = removeWin(done, win.id);
+    expect(removed).toMatchObject({ wins: [newer, tied] });
+    const restored = restoreWin(removed, win, "FITNESS", 1);
+    expect(restored).toMatchObject({ wins: [newer, win, tied] });
+    expect(restoreWin(restored, win, "FITNESS", 1)).toBe(restored);
+  });
+
+  it("never restores a failed deletion into a different category", () => {
+    const career = { ...win, id: "career", category: "CAREER" };
+    const done = succeed(begin(initialTimelineState), 1, [career]);
+    expect(restoreWin(done, win, "CAREER")).toBe(done);
+    expect(restoreWin(done, win, "")).toMatchObject({ wins: [career, win] });
+  });
+
+  it("filters pending and confirmed deletions from responses that started before the mutation", () => {
+    const another = { ...win, id: "another" };
+    const hidden = new Set([win.id]);
+    expect(visibleWins([win, another], hidden)).toEqual([another]);
+    hidden.delete(win.id); // failed delete; the next response can include the restored row
+    expect(visibleWins([win, another], hidden)).toEqual([win, another]);
   });
 });

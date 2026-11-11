@@ -1,14 +1,14 @@
-// Seed script: creates the demo user and starter data.
-// Safe to re-run once the data model exists.
-// Run via: pnpm db:seed
-
 import { prisma } from "@project/db";
+import { seedDemoData } from "./seed-data";
 
 async function main() {
-  console.log("seed: no data model yet — nothing to do");
+  await seedDemoData(prisma);
+  console.log("seed: demo-user and four sample wins are ready (existing rows preserved)");
 }
 
-main().catch((err) => {
-  console.error(err);
-  process.exit(1);
-});
+main()
+  .catch((err) => {
+    console.error("seed: failed; is the local database running?", err);
+    process.exitCode = 1;
+  })
+  .finally(() => prisma.$disconnect());

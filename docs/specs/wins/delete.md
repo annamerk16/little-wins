@@ -75,7 +75,7 @@ deleting that row.
 
 ## Confirm dialog
 
-`apps/web/components/DeleteWinDialog.tsx` is the confirmation step before a win is deleted. It uses the native `<dialog>` element opened with `showModal()` (APG Dialog (Modal) pattern). A temporary demo lives at `/sandbox/delete-confirm` until the timeline imports it.
+`apps/web/components/DeleteWinDialog.tsx` is the confirmation step before a win is deleted. It uses the native `<dialog>` element opened with `showModal()` (APG Dialog (Modal) pattern). The timeline imports it in controlled mode, keeping the modal mounted while a card is removed optimistically. A standalone demo lives at `/sandbox/delete-confirm`.
 
 | Key / action | Result |
 |---|---|
@@ -84,6 +84,13 @@ deleting that row.
 | Escape or "Cancel" | Dialog closes, focus returns to the "Delete" trigger |
 | Confirm | Both buttons disable and show "Deleting…"; on success the dialog closes |
 | Confirm fails | Dialog stays open with an error (`role="alert"`) and the buttons re-enable |
+
+While deletion is pending, Escape is ignored and repeated confirmation
+cannot start another request. Accessible heading and description IDs are
+unique per dialog instance. On the timeline, failure restores the card and
+shows an accessible error; success refetches the selected category. Focus
+returns to the original trigger if present, otherwise the timeline heading.
+See [home.md](home.md) for the complete optimistic-update contract.
 
 The dialog is named by its heading (`aria-labelledby`) and described by its message (`aria-describedby`). The trigger carries visually hidden text so its accessible name says which win it deletes.
 

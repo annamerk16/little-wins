@@ -16,11 +16,14 @@ lets the user try again.
   fetch lifecycle (no React).
 - `tests/unit/timeline-state.test.ts` — transition tests.
 - `apps/web/app/sandbox/timeline/page.tsx` — sandbox route that mounts the
-  component; the homepage (`apps/web/app/page.tsx`) has a separate owner.
+  component. The homepage composes it through `WinsHome.tsx`; see [home.md](home.md).
 - Existing `GET /api/wins`; see [list.md](list.md).
 
 ## Behavior
-- On mount the timeline requests `GET /api/wins` once.
+- On mount the timeline requests `GET /api/wins`, adding `?category=CATEGORY`
+  when its `category` prop is set. Changing category or `refreshKey` cancels
+  and replaces the pending request. Strict Mode can start a replacement
+  after cleanup; cancelled responses never populate the list.
 - **Loading:** a skeleton of three placeholder cards renders in place of the
   list, and the region has `aria-busy="true"` with a status message
   "Loading wins…". No full-page spinner.
@@ -30,7 +33,9 @@ lets the user try again.
   with empty `alt` (decorative; the reflection carries the meaning).
 - **Empty:** when the API returns no wins, the region shows "No wins yet"
   and a primary action, "Log your first win", linking to the Log a Win form
-  (`logWinHref` prop, default `/wins/new`).
+  (`onLogWin` callback on the home screen, or `logWinHref`, default
+  `/sandbox/log-win`, for standalone demos). A filtered empty result says
+  "No wins in this category yet."
 - **Error:** when the request fails (network error or any non-2xx), the
   region shows an error card with role `alert`, the message "Couldn't load
   your wins.", and a Retry button. The raw error is never shown. Retry
@@ -39,6 +44,16 @@ lets the user try again.
   replaces the error card with the skeleton, and any retry while a request is
   pending is ignored, so rapid clicks produce exactly one request. A response from a superseded
   or unmounted request never changes the screen.
+- **Creation:** a successful creation increments `refreshKey`; the active
+  category is retained and refetched.
+- **Deletion:** each card opens the shared confirmation dialog. Confirm
+  removes the card optimistically; failure restores it at its original
+  sorted position, shows an alert, and leaves the dialog available for retry.
+  Pending and successful deletions are excluded from overlapping GET
+  results. Success announces deletion and refreshes the active category.
+  The dialog stays mounted independently of the removed card. Closing it
+  focuses the original trigger if it still exists, otherwise the timeline
+  heading. See [delete.md](delete.md) and [home.md](home.md).
 
 ## Examples
 | State / input | Behavior |
@@ -79,9 +94,6 @@ lets the user try again.
   [list.md](list.md)).
 
 ## Out of scope
-- Category filtering on the timeline — [category-filter.md](category-filter.md);
-  wiring it in is coordinated with that owner.
-- Creating wins (the Log a Win form) — [create.md](create.md).
-- Deleting from the timeline and the confirm dialog — [delete.md](delete.md)
-  and the accessible-component work.
-- Mounting the timeline on the homepage — owned by the `page.tsx` owner.
+- Form validation and creation requests — [create.md](create.md).
+- Server deletion semantics — [delete.md](delete.md).
+- Screen composition and local setup — [home.md](home.md).

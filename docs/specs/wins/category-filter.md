@@ -9,6 +9,7 @@ Let users view wins from one category or return to all their wins.
 ## Where it lives
 - apps/web/components/CategoryFilter.tsx
 - apps/web/app/sandbox/category-filter/page.tsx
+- apps/web/components/WinsHome.tsx — home-screen selection passed to Timeline.
 - Existing GET /api/wins endpoint; see list.md.
 
 ## Behavior
@@ -44,9 +45,9 @@ Use sample wins in at least two categories.
 ## Constraints & decisions
 Use a native select and the existing API.
 The component receives value and onChange props for reuse.
-No new dependencies, database changes, or homepage edits.
+No new dependencies or database changes. Home-screen composition is described
+in [home.md](home.md); the sandbox remains independently usable.
 
 ## Out of scope
-Connecting to the final timeline is coordinated separately
-with its owner. Creating wins, monthly recap, and real
-authentication are separate features.
+Creating wins, monthly recap, and real authentication are separate features.
+The connected home screen is described in [home.md](home.md).

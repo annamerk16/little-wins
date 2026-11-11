@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useId, useRef, useState, type FormEvent } from "react";
+import { useEffect, useId, useRef, useState, type FormEvent, type Ref } from "react";
 import {
   CATEGORIES,
   MAX_REFLECTION,
@@ -23,7 +23,12 @@ const NO_TOUCHED: Record<LogWinField, boolean> = {
   location: false,
 };
 
-export default function LogWinDialog() {
+type Props = {
+  onCreated?: () => void;
+  triggerRef?: Ref<HTMLButtonElement>;
+};
+
+export default function LogWinDialog({ onCreated, triggerRef }: Props) {
   const ids = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const reflectionRef = useRef<HTMLTextAreaElement>(null);
@@ -137,6 +142,7 @@ export default function LogWinDialog() {
       if (response.status === 201) {
         setStatus("Win logged.");
         close();
+        onCreated?.();
       } else {
         const body = await response.json().catch(() => null);
         setSubmitError(errorMessageFor(response.status, body));
@@ -156,6 +162,7 @@ export default function LogWinDialog() {
   return (
     <>
       <button
+        ref={triggerRef}
         type="button"
         onClick={open}
         className="cursor-pointer disabled:cursor-not-allowed inline-flex min-h-11 items-center gap-2 rounded-full bg-[#2f5a3c] px-4 text-[15px] font-bold text-white"

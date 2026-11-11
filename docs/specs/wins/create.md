@@ -15,7 +15,7 @@ Let users log a win with a reflection, a category, and where it happened.
 - `apps/web/components/LogWinDialog.tsx` — Client Component: trigger button, modal dialog, form state, geolocation, submit.
 - `apps/web/components/logWinValidation.ts` — pure, client-safe validation and error-message mapping used by the dialog.
 - `tests/web/log-win-validation.test.ts` — tests for the pure module.
-- `apps/web/app/sandbox/log-win/page.tsx` — temporary demo page until a real page imports the dialog.
+- `apps/web/app/sandbox/log-win/page.tsx` — standalone demo; the home screen also imports the dialog through `WinsHome.tsx`.
 
 ## Behavior
 
@@ -124,6 +124,10 @@ Verify: run `pnpm exec vitest run tests/web/log-win-validation.test.ts`, which c
 4. Stop the database, submit a valid form, and confirm `Failed` keeps the dialog open and the values and shows the generic message with no raw error text.
 5. Submit a valid form and confirm the win appears in `GET /api/wins` for `demo-user`.
 
+The optional `onCreated` callback runs after a successful save and lets the
+home screen refresh the current category. `triggerRef` lets its empty-state
+action open the same dialog. See [home.md](home.md).
+
 ## Out of scope
 
-Photo upload and `photoUrl` in the form (a separate endpoint), editing, deleting ([delete.md](delete.md)), showing the new win in a timeline ([list.md](list.md)), reverse-geocoding coordinates to a place name, and session authentication.
+Photo upload and `photoUrl` in the form (a separate endpoint), editing, deleting ([delete.md](delete.md)), reverse-geocoding coordinates to a place name, and session authentication. Home-screen refresh is described in [home.md](home.md).
