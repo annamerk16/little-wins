@@ -1,5 +1,5 @@
-// The data model for the entire app. Boilerplate — empty schema with no models.
-// Example branches add their own models, enums, and migrations here.
+// Little Wins data and library-owned authentication storage.
+// The lower(email) uniqueness index is defined in append-only migration SQL.
 
 generator client {
   provider        = "prisma-client-js"
@@ -20,8 +20,64 @@ model User {
   name      String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  emailVerified Boolean @default(false)
+  image     String?
 
   wins      Win[]
+  sessions  Session[]
+  accounts  Account[]
+}
+
+model Session {
+  id        String @id @default(uuid())
+  token     String @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Account {
+  id                    String @id @default(uuid())
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  password              String?
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+
+  @@unique([providerId, accountId])
+  @@index([userId])
+}
+
+model Verification {
+  id         String @id @default(uuid())
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+}
+
+model RateLimit {
+  id          String @id @default(uuid())
+  key         String @unique
+  count       Int
+  lastRequest BigInt
 }
 
 enum Category {

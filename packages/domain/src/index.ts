@@ -1,6 +1,13 @@
 import { Category, prisma } from "@project/db";
 import { z } from "zod";
 
+export { RegisterInput, LoginInput, validateAuthInput } from "./auth-input";
+
+// Authentication-only lookup; never grants access or attaches a credential.
+export async function registrationEmailExists(email: string) {
+  return (await prisma.user.count({ where: { email: { equals: email, mode: "insensitive" } } })) > 0;
+}
+
 export const categorySchema = z.nativeEnum(Category);
 export type WinCategory = z.infer<typeof categorySchema>;
 

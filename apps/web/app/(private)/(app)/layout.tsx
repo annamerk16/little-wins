@@ -1,7 +1,7 @@
 // Layout for the app's main screens: sidebar beside the page content.
 // The root body is a narrow centered column, so this wrapper widens itself
 // past it (see docs/specs/navigation/sidebar.md) instead of editing the root.
-import Sidebar from "../../components/Sidebar";
+import Sidebar from "../../../components/Sidebar";
 
 export default function AppLayout({ children }: { children: React.ReactNode }) {
   return (

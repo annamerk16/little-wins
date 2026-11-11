@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import DeleteWinDialog from "../../../components/DeleteWinDialog";
+import DeleteWinDialog from "../../../../components/DeleteWinDialog";
 
 export default function Page() {
   const [message, setMessage] = useState("Nothing deleted yet.");

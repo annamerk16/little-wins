@@ -19,4 +19,5 @@ that supersedes the old one.
 | 0009 | [Validation + queries live in a web-only domain package](0009-domain-web-only.md) | Accepted |
 | 0010 | [Reviewer-agent lifecycle and authority](0010-reviewer-agent-lifecycle.md) | Accepted |
 | 0011 | [Ideation pipeline + @research subagent](0011-ideation-pipeline.md) | Accepted |
+| 0012 | [Password and GitHub auth with database sessions](0012-password-github-database-sessions.md) | Accepted; supersedes 0003 |
 EOF

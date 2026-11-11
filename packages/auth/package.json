@@ -10,9 +10,20 @@
     "clean": "rm -rf dist"
   },
   "dependencies": {
-    "next": "15.5.21"
+    "@better-auth/prisma-adapter": "1.7.19",
+    "better-auth": "1.7.19",
+    "next": "15.5.21",
+    "@project/db": "workspace:*"
   },
   "devDependencies": {
     "vitest": "^4.0.0"
+  },
+  "exports": {
+    "./http": "./src/http.ts",
+    "./server": "./src/server.ts",
+    ".": "./src/index.ts"
+  },
+  "imports": {
+    "#database": "@project/db"
   }
 }
