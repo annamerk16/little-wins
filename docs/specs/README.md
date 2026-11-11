@@ -50,6 +50,12 @@ store issue state. See [CONTRIBUTING](../../CONTRIBUTING.md) for the full arc.
 | [timeline](wins/timeline.md) | feature | Timeline of the user's wins with loading, empty, and error states | 0009 |
 | [delete](wins/delete.md) | feature | Permanently delete one of the current user's wins | 0009, 0003 |
 
+### Navigation (`navigation/`)
+
+| Doc | Type | What it covers | Key ADRs |
+|---|---|---|---|
+| [sidebar](navigation/sidebar.md) | feature | Sidebar linking timeline, map, recap, and profile; current-page marking | — |
+
 Feature specs live under `docs/specs/<domain>/`, grouped by the domain they
 describe. In this template repo the `items/` domain is a worked demonstration;
 an application built from this template keeps its own domains on `main`.

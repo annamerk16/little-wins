@@ -15,6 +15,8 @@ lets the user try again.
 - `apps/web/components/timeline-state.ts` — pure state transitions for the
   fetch lifecycle (no React).
 - `tests/unit/timeline-state.test.ts` — transition tests.
+- `apps/web/app/(app)/timeline/page.tsx` — the `/timeline` screen, reached
+  from the [sidebar](../navigation/sidebar.md).
 - `apps/web/app/sandbox/timeline/page.tsx` — sandbox route that mounts the
   component; the homepage (`apps/web/app/page.tsx`) has a separate owner.
 - Existing `GET /api/wins`; see [list.md](list.md).
@@ -56,7 +58,7 @@ lets the user try again.
   every transition in `timeline-state.ts`, including ignored duplicate
   retries and stale responses.
 - With `pnpm dev` running and the `demo-user` row seeded, open
-  `/sandbox/timeline` and run the three proofs:
+  `/timeline` (or `/sandbox/timeline`) and run the three proofs:
   1. **Slow network:** DevTools → Network → "Slow 3G", reload: the skeleton
      is visible before the cards.
   2. **Server down:** stop the dev database and reload: the error card
