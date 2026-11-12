@@ -173,7 +173,7 @@ export default function LogWinDialog() {
         onCancel={(event) => {
           if (submittingRef.current) event.preventDefault();
         }}
-        className="m-auto w-full max-w-md rounded-[22px] bg-[#fdfdfb] p-7 text-[#1e2b1b] shadow-[0_30px_60px_-20px_rgba(30,43,27,0.35)] backdrop:bg-[#1e2b1b]/45 max-sm:m-0 max-sm:mt-auto max-sm:max-w-none max-sm:rounded-b-none max-sm:px-5 max-sm:pb-7 max-sm:pt-5"
+        className="m-auto w-full max-w-lg rounded-[22px] bg-[#fdfdfb] p-7 text-[#1e2b1b] shadow-[0_30px_60px_-20px_rgba(30,43,27,0.35)] backdrop:bg-[#1e2b1b]/45 max-sm:m-0 max-sm:mt-auto max-sm:max-w-none max-sm:rounded-b-none max-sm:px-5 max-sm:pb-7 max-sm:pt-5"
       >
         <h2 id={`${ids}-title`} className="font-display text-[30px] font-extrabold leading-[34px] tracking-[-0.03em]">
           Log a win
@@ -205,7 +205,7 @@ export default function LogWinDialog() {
               <label htmlFor={`${ids}-reflection`} className="text-xs font-bold uppercase tracking-[0.08em] text-[#556251]">
                 Reflection
               </label>
-              <div className="relative pt-2">
+              <div className="pt-2">
                 <textarea
                   id={`${ids}-reflection`}
                   ref={reflectionRef}
@@ -222,12 +222,12 @@ export default function LogWinDialog() {
                     background:
                       "linear-gradient(transparent 27px, #d6ded1 27px) 0 0 / 100% 28px repeat-y local content-box, #fdfdfb",
                   }}
-                  className="box-border block h-[116px] w-full resize-none rounded-none border-0 border-b-[1.8px] border-[#5e6b5a] px-0.5 pb-[30px] pt-0 text-[17px] leading-7 placeholder:text-[#556251]/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2b4a27]"
+                  className="box-border block h-[116px] w-full resize-none rounded-none border-0 border-b-[1.8px] border-[#5e6b5a] px-0.5 pb-0.5 pt-0 text-[17px] leading-7 placeholder:text-[#556251]/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#2b4a27]"
                 />
-                <span className="pointer-events-none absolute bottom-2 right-2.5 text-[13px] tabular-nums text-[#556251]">
-                  {draft.reflection.trim().length}/{MAX_REFLECTION}
-                </span>
               </div>
+              <span className="self-end text-[13px] tabular-nums text-[#556251]">
+                {draft.reflection.trim().length}/{MAX_REFLECTION}
+              </span>
               {reflectionError && (
                 <p id={`${ids}-reflection-error`} className="text-sm text-red-600">
                   {reflectionError}
