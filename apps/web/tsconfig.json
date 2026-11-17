@@ -3,7 +3,14 @@
   "compilerOptions": {
     "jsx": "preserve",
     "plugins": [{ "name": "next" }],
-    "paths": { "@/*": ["./*"] },
+    "paths": {
+      "@/*": ["./*"],
+      "#auth": ["../../packages/auth/src/index.ts"],
+      "#auth/server": ["../../packages/auth/src/server.ts"],
+      "#auth/http": ["../../packages/auth/src/http.ts"],
+      "#domain": ["../../packages/domain/src/index.ts"],
+      "#database": ["../../packages/db/src/index.ts"]
+    },
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true
   },

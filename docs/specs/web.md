@@ -38,6 +38,10 @@ Every route handler and Server Action, in order:
 - **Foreign resources return 404, not 403** — existence is not confirmed to
   non-owners.
 - Raw errors and stack traces never reach a client.
+- Cookie-authenticated writes validate the request origin after identity
+  resolution. Known auth unavailability returns 503 `AUTH_UNAVAILABLE`;
+  auth throttling uses 429 `RATE_LIMITED` with Retry-After, through the same
+  structured error envelope. See [auth](auth.md).
 
 ## Verify
 

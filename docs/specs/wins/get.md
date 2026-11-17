@@ -28,7 +28,8 @@ Errors use `{ error: { code, message } }`.
 | id doesn't exist | 404, `NOT_FOUND` |
 | id belongs to another user | 404, `NOT_FOUND` |
 | No resolved user ID | 401, `UNAUTHENTICATED` |
-| Auth or database failure | 500, `INTERNAL_ERROR`; details logged on the server |
+| Auth storage/configuration unavailable | 503, `AUTH_UNAVAILABLE` |
+| Win query/database failure | 500, `INTERNAL_ERROR`; details logged on the server |
 
 ## Verify
 
@@ -38,8 +39,8 @@ Check the cases above against the handler, including that another user's win
 
 ## Constraints & decisions
 
-The [dev auth stub](../auth.md) defaults to the demo user when no identity is
-supplied. Foreign and absent ids are deliberately indistinguishable, per
+The [auth subsystem](../auth.md) derives identity only from a verified
+database session. Foreign and absent ids are deliberately indistinguishable, per
 [web.md](../web.md).
 
 ## Out of scope

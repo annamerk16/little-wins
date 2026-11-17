@@ -1,4 +1,4 @@
-import Timeline from "../../../components/Timeline";
+import Timeline from "../../../../components/Timeline";
 
 export default function TimelineSandboxPage() {
   return (

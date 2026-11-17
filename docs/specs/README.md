@@ -26,7 +26,7 @@ store issue state. See [CONTRIBUTING](../../CONTRIBUTING.md) for the full arc.
 | [seams](seams.md) | infrastructure | The unifying seam pattern: local stand-in by default, real cloud via env var | 0005, 0008, 0003 |
 | [storage](storage.md) | infrastructure | Local-vs-real Azure pattern across blob and queue | 0006, 0008, 0005 |
 | [web](web.md) | infrastructure | Health endpoint, async-honesty UI standard, server entry ritual + error shape (404-not-403) | 0003, 0009 |
-| [auth](auth.md) | infrastructure | Identity derivation: dev stub now, sessions later, same seam | 0003 |
+| [auth](auth.md) | infrastructure | Verified database-session identity for password and GitHub login | 0012, 0003 |
 | [deploy](deploy.md) | infrastructure | Container build + Azure topology, config via env only, kill-switches | 0008 |
 | [observability](observability.md) | infrastructure | Structured logs, request IDs, what gets measured | — |
 
@@ -40,6 +40,12 @@ store issue state. See [CONTRIBUTING](../../CONTRIBUTING.md) for the full arc.
 | [attachment](items/attachment.md) | feature | Upload/download image, blob storage, MIME validation | 0006, 0008 |
 | [thumbnail](items/thumbnail.md) | feature | Worker thumbnail generation with sharp, queue pipeline | 0006, 0007, 0008 |
 | [live-progress](items/live-progress.md) | feature | SSE live progress for thumbnail pipeline, pg_notify fan-out | 0007, 0005 |
+
+### Authentication (`authentication/`)
+
+| Doc | Type | What it covers | Key ADRs |
+|---|---|---|---|
+| [sign-in](authentication/sign-in.md) | feature | Password registration/login, GitHub, private access, sessions, and logout | 0012 |
 
 ### Wins domain (`wins/`)
 

@@ -2,7 +2,7 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "paths": { "#database": ["../db/src/index.ts"] }
   },
   "include": ["src"]
 }

@@ -1,4 +1,5 @@
-import { currentUserId } from "@project/auth";
+import { AuthUnavailableError, currentUserId } from "@project/auth";
+import { mutationOriginAllowed } from "#auth/http";
 import { categorySchema, listWins, CreateWin, createWin } from "@project/domain";
 import { log } from "@project/log";
 
@@ -8,7 +9,7 @@ function errorResponse(status: number, code: string, message: string) {
 
 export async function GET(request: Request) {
   try {
-    const userId = await currentUserId();
+    const userId = await currentUserId(request);
     if (!userId) {
       return errorResponse(401, "UNAUTHENTICATED", "Sign in required");
     }
@@ -22,6 +23,7 @@ export async function GET(request: Request) {
     const wins = await listWins({ userId, category: parsed.data });
     return Response.json({ wins });
   } catch (err) {
+    if (err instanceof AuthUnavailableError) return errorResponse(503, "AUTH_UNAVAILABLE", "Authentication is temporarily unavailable");
     log.error({ err, route: "GET /api/wins" }, "Failed to list wins");
     return errorResponse(500, "INTERNAL_ERROR", "Unable to load wins");
   }
@@ -29,10 +31,12 @@ export async function GET(request: Request) {
 
 export async function POST(request: Request) {
   try {
-    const userId = await currentUserId();
+    const userId = await currentUserId(request);
     if (!userId) {
       return errorResponse(401, "UNAUTHENTICATED", "Sign in required");
     }
+
+    if (!mutationOriginAllowed(request)) return errorResponse(403, "BAD_ORIGIN", "Request origin is not allowed");
 
     let body: unknown;
     try {
@@ -49,6 +53,7 @@ export async function POST(request: Request) {
     const win = await createWin({ userId, ...parsed.data });
     return Response.json({ win }, { status: 201 });
   } catch (err) {
+    if (err instanceof AuthUnavailableError) return errorResponse(503, "AUTH_UNAVAILABLE", "Authentication is temporarily unavailable");
     log.error({ err, route: "POST /api/wins" }, "Failed to create win");
     return errorResponse(500, "INTERNAL_ERROR", "Unable to create win");
   }

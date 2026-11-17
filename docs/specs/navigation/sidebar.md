@@ -11,16 +11,21 @@ which screen they are on.
 ## Where it lives
 - `apps/web/components/Sidebar.tsx` — client component; the navigation
   links and current-page marking.
-- `apps/web/app/(app)/layout.tsx` — route-group layout that renders the
+- `apps/web/app/(private)/(app)/layout.tsx` — route-group layout that renders the
   sidebar beside the page content. The group adds no URL segment.
-- `apps/web/app/(app)/timeline/page.tsx` — mounts the existing
+- `apps/web/app/(private)/(app)/timeline/page.tsx` — mounts the existing
   [timeline](../wins/timeline.md) component.
-- `apps/web/app/(app)/map/page.tsx`, `apps/web/app/(app)/recap/page.tsx`,
-  `apps/web/app/(app)/profile/page.tsx` — placeholder pages.
+- `apps/web/app/(private)/(app)/map/page.tsx`, `apps/web/app/(private)/(app)/recap/page.tsx`,
+  `apps/web/app/(private)/(app)/profile/page.tsx` — placeholder pages.
 - `apps/web/components/ComingSoon.tsx` — the placeholder body those pages
   share.
 
 ## Behavior
+- `/timeline`, `/map`, `/recap`, and `/profile` require a verified session.
+  Signed-out visitors are redirected to `/login` by the parent private layout
+  before the screen is shown. Signed-in visitors share its sign-out control.
+  These four routes are allowed local login return paths; see
+  [authentication](../authentication/sign-in.md).
 - The sidebar is a navigation landmark (`<nav aria-label="Main">`) with four
   links, in this order: Timeline (`/timeline`), Map (`/map`), Recap
   (`/recap`), Profile (`/profile`).
@@ -41,10 +46,11 @@ which screen they are on.
 ## Examples
 | State / input | Behavior |
 |---|---|
-| Visit `/timeline` | Sidebar shown; Timeline marked current; wins load |
-| Visit `/map` | Sidebar shown; Map marked current; "coming soon" placeholder |
+| Signed-out visit to any of the four routes | Redirect to `/login`; private screen is not shown |
+| Signed-in visit to `/timeline` | Sidebar and sign-out shown; Timeline marked current; wins load |
+| Signed-in visit to `/map` | Sidebar and sign-out shown; Map marked current; "coming soon" placeholder |
 | Click Recap from `/timeline` | Navigates to `/recap`; Recap becomes current |
-| Keyboard: Tab from page top | Focus moves through the four links in order, each with a visible outline |
+| Keyboard: Tab through private controls and sidebar | Sign-out and the four links are reachable, each with a visible outline |
 | Window 375px wide | Links shown in a horizontal bar above the content |
 | Visit `/` | Homepage unchanged, no sidebar |
 | Visit `/settings` | 404, no sidebar |
@@ -52,7 +58,9 @@ which screen they are on.
 ## Verify
 - `pnpm test`, `pnpm typecheck`, and `pnpm build` pass; the build output
   lists `/timeline`, `/map`, `/recap`, and `/profile`.
-- With `pnpm dev` running, visit each of the four routes and check exactly
+- Verify all four routes redirect to `/login` without a session or after
+  logout. Sign in with each as `returnTo` and confirm the selected screen.
+- With the local app running and a valid session, visit each route and check exactly
   one link is marked current.
 - Keyboard-only pass: Tab through the sidebar, press Enter on each link.
 - Narrow the window below 640px: the links move to a top bar and stay
@@ -77,5 +85,6 @@ which screen they are on.
   built.
 - The homepage (`/`), owned by the `page.tsx` owner; whether it redirects to
   `/timeline` is that owner's decision.
-- Sign-out and account switching — real auth arrives later (see
-  [auth](../auth.md)).
+- Sign-out mechanics and account switching — owned by
+  [authentication](../authentication/sign-in.md); the shared private layout
+  supplies the sign-out control.

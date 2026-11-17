@@ -1,4 +1,5 @@
-import { currentUserId } from "@project/auth";
+import { AuthUnavailableError, currentUserId } from "@project/auth";
+import { mutationOriginAllowed } from "#auth/http";
 import { deleteWin, getWin } from "@project/domain";
 import { log } from "@project/log";
 
@@ -7,11 +8,11 @@ function errorResponse(status: number, code: string, message: string) {
 }
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = await currentUserId();
+    const userId = await currentUserId(request);
     if (!userId) {
       return errorResponse(401, "UNAUTHENTICATED", "Sign in required");
     }
@@ -24,20 +25,23 @@ export async function GET(
 
     return Response.json({ win });
   } catch (err) {
+    if (err instanceof AuthUnavailableError) return errorResponse(503, "AUTH_UNAVAILABLE", "Authentication is temporarily unavailable");
     log.error({ err, route: "GET /api/wins/:id" }, "Failed to load win");
     return errorResponse(500, "INTERNAL_ERROR", "Unable to load win");
   }
 }
 
 export async function DELETE(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const userId = await currentUserId();
+    const userId = await currentUserId(request);
     if (!userId) {
       return errorResponse(401, "UNAUTHENTICATED", "Sign in required");
     }
+
+    if (!mutationOriginAllowed(request)) return errorResponse(403, "BAD_ORIGIN", "Request origin is not allowed");
 
     const { id } = await params;
     const deleted = await deleteWin({ userId, id });
@@ -47,6 +51,7 @@ export async function DELETE(
 
     return new Response(null, { status: 204 });
   } catch (err) {
+    if (err instanceof AuthUnavailableError) return errorResponse(503, "AUTH_UNAVAILABLE", "Authentication is temporarily unavailable");
     log.error({ err, route: "DELETE /api/wins/:id" }, "Failed to delete win");
     return errorResponse(500, "INTERNAL_ERROR", "Unable to delete win");
   }

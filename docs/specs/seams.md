@@ -22,29 +22,37 @@ production behavior diverge, controlled by configuration, not code branches.
 | Database (dev) | Local Postgres via `apps/db-server/` | Azure Postgres | `DATABASE_URL` |
 | Blob storage | Azurite | Azure Blob Storage | `AZURE_STORAGE_CONNECTION_STRING` |
 | Queue | Azurite | Azure Storage Queue | `AZURE_STORAGE_CONNECTION_STRING` |
-| Identity | Dev stub (`x-user-id` header, env fallback) | Real auth (OAuth, JWTs) | `ALLOW_DEV_IDENTITY` guard + package replacement |
+| Identity | Real password/GitHub auth with database sessions | Same auth with production secrets and HTTPS | `BETTER_AUTH_SECRET`, `BETTER_AUTH_URL`, optional GitHub credentials; see [auth](auth.md) |
 
 ## Design intent
 
 - **No code branches.** The seam is never an `if (isLocal)`. The stand-in and
   the real thing implement the same interface, and the configuration chooses
   which one the SDK connects to.
-- **Default to running.** Every seam works out of the box with zero cloud
-  setup. `pnpm dev` starts the stand-ins (Postgres, Azurite).
-- **Safe by default.** The identity stub, and any other stand-in that could
-  be a security risk, throws in production unless explicitly overridden.
+- **Default to running.** Infrastructure stand-ins need no cloud account.
+  `pnpm dev` starts Postgres and Azurite. Real authentication has the explicit
+  configuration exception below.
+- **Safe by default.** Missing authentication configuration fails closed;
+  development cannot make a client-supplied identity trustworthy.
 - **One env var per seam.** Azure Blob and Queue share
   `AZURE_STORAGE_CONNECTION_STRING`; the database has its own
-  (`DATABASE_URL`); identity has its own (`ALLOW_DEV_IDENTITY`). Each seam
-  is a distinct env var away from production, and none requires more than
-  one.
+  (`DATABASE_URL`). Infrastructure seams use one switch each; identity has
+  the explicit exception below.
+
+The identity subsystem is the explicit exception to the zero-setup stub and
+single-variable rule: it uses real sessions in every environment and needs a
+secret, canonical URL, and provider credentials. There is no environment flag
+that makes a client-supplied identity trustworthy. See
+[ADR-0012](../adr/0012-password-github-database-sessions.md).
 
 ## ADRs
 
 - [ADR-0005](../adr/0005-pglite-tests.md) — PGlite as the test-database seam.
 - [ADR-0008](../adr/0008-azurite-seam.md) — Azurite as the blob/queue seam.
 - [ADR-0003](../adr/0003-dev-identity-stub.md) — the identity stub as the auth
-  seam.
+  seam's historical implementation.
+- [ADR-0012](../adr/0012-password-github-database-sessions.md) — real
+  authentication in every environment.
 
 ## Adding a new seam
 
