@@ -26,7 +26,8 @@ Errors use `{ error: { code, message } }`.
 | `?category=CAREER` | 200, only their career wins |
 | Empty or invalid category | 400, `BAD_CATEGORY` |
 | No resolved user ID | 401, `UNAUTHENTICATED` |
-| Auth or database failure | 500, `INTERNAL_ERROR`; details logged on the server |
+| Auth storage/configuration unavailable | 503, `AUTH_UNAVAILABLE` |
+| Win query/database failure | 500, `INTERNAL_ERROR`; details logged on the server |
 
 ## Verify
 
@@ -35,7 +36,9 @@ Check the cases above against the handler, including exclusion of other users' w
 
 ## Constraints & decisions
 
-The [dev auth stub](../auth.md) defaults to the demo user when no identity is supplied.
+The [auth subsystem](../auth.md) derives the current user from a verified
+database session; there is no demo-user fallback. Signed-out calls return
+the structured 401 response before wins are queried.
 
 ## Out of scope
 

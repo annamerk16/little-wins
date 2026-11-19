@@ -8,7 +8,7 @@ Let users view wins from one category or return to all their wins.
 
 ## Where it lives
 - apps/web/components/CategoryFilter.tsx
-- apps/web/app/sandbox/category-filter/page.tsx
+- apps/web/app/(private)/sandbox/category-filter/page.tsx
 - Existing GET /api/wins endpoint; see list.md.
 
 ## Behavior
