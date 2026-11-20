@@ -1,0 +1,1 @@
+ALTER TABLE "Win" ADD COLUMN "photoBlobKey" TEXT;

@@ -20,12 +20,18 @@ to `UseDevelopmentStorage=true`, which connects to Azurite at `127.0.0.1:10000`
 (blob) and `127.0.0.1:10001` (queue). No code branches on `isLocal`.
 
 ### Blob adapter (`packages/services/src/storage.ts`)
-- Container: `attachments`.
+- Container: `attachments`, with anonymous access disabled.
 - `uploadAttachment(entityId, filename, contentType, data)` → blob name.
-- `downloadAttachment(blobName)` → `{ data, contentType }` or null.
+  The adapter ensures the container exists before writing, so a fresh Azurite
+  instance needs no manual container setup. The same call is safe when the
+  container already exists.
+- `downloadAttachment(blobName)` → `{ data, contentType }` or null for a
+  missing blob. Other storage failures propagate to the caller.
 - `safeBlobName(entityId, filename)` sanitizes the user filename and namespaces
   it under the entity ID: `<entityId>/<sanitized-name>`.
-- `storageAvailable()` probes container metadata; returns `false` if Azurite is down.
+- `storageAvailable()` probes container metadata. It returns `false` when the
+  container is missing or storage is unreachable. Call `uploadAttachment`
+  directly for uploads so it can initialize a missing container.
 
 ### Queue adapter (`packages/services/src/queue.ts`)
 - Queue name: `jobs`.
@@ -71,9 +77,16 @@ to `UseDevelopmentStorage=true`, which connects to Azurite at `127.0.0.1:10000`
 |---|---|---|
 | `AZURE_STORAGE_CONNECTION_STRING` | `UseDevelopmentStorage=true` | Switches Azurite ↔ real Azure |
 
+Production sets `AZURE_STORAGE_CONNECTION_STRING` as a server-side deployment
+secret. The connection string authorizes container creation and blob reads
+and writes. If `attachments` is provisioned ahead of time, configure it with
+anonymous access disabled.
+
 ## Testing
 
-- Blob operations can be tested against Azurite in CI.
+- With an empty Azurite instance, upload an attachment and download it by the
+  returned key. Confirm the bytes and content type match. Upload a second file
+  to confirm the existing container is reused.
 - Queue operations: sending a message and receiving it back through Azurite
   validates the full round-trip.
 - Unit tests for individual functions (`safeBlobName`, `storageAvailable`) do

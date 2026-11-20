@@ -35,6 +35,8 @@
     "#auth/server": "@project/auth/server",
     "#auth/http": "@project/auth/http",
     "#auth": "@project/auth",
-    "#domain": "@project/domain"
+    "#domain": "@project/domain",
+    "#services": "@project/services",
+    "#log": "@project/log"
   }
 }
