@@ -90,6 +90,7 @@ enum Category {
 model Win {
   id         String   @id @default(uuid())
   photoUrl   String?
+  photoBlobKey String?
   reflection String
   category   Category
   latitude   Float

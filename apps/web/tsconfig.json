@@ -9,6 +9,8 @@
       "#auth/server": ["../../packages/auth/src/server.ts"],
       "#auth/http": ["../../packages/auth/src/http.ts"],
       "#domain": ["../../packages/domain/src/index.ts"],
+      "#services": ["../../packages/services/src/index.ts"],
+      "#log": ["../../packages/log/src/index.ts"],
       "#database": ["../../packages/db/src/index.ts"]
     },
     "lib": ["dom", "dom.iterable", "esnext"],

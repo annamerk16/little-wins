@@ -45,5 +45,4 @@ database session. Foreign and absent ids are deliberately indistinguishable, per
 
 ## Out of scope
 
-Editing and photo upload for a single win are not yet specified. Deletion is
-specified in [delete.md](delete.md).
+Reading the image bytes belongs to the [win photo endpoint](create.md#photo-endpoints).

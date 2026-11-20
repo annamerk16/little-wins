@@ -32,27 +32,32 @@ export async function uploadAttachment(
   itemId: string,
   filename: string,
   contentType: string,
-  data: ArrayBuffer
+  data: ArrayBuffer,
+  abortSignal?: AbortSignal,
 ): Promise<string> {
   const blobName = safeBlobName(itemId, filename);
   const client = BlobServiceClient.fromConnectionString(CONNECTION_STRING);
-  const blockBlob = client.getContainerClient(CONTAINER).getBlockBlobClient(blobName);
-  await blockBlob.uploadData(data, { blobHTTPHeaders: { blobContentType: contentType } });
+  const container = client.getContainerClient(CONTAINER);
+  await container.createIfNotExists({ abortSignal });
+  const blockBlob = container.getBlockBlobClient(blobName);
+  await blockBlob.uploadData(data, { abortSignal, blobHTTPHeaders: { blobContentType: contentType } });
   log.info({ blobName, bytes: data.byteLength }, "uploaded blob");
   return blobName;
 }
 
 export async function downloadAttachment(
-  blobName: string
-): Promise<{ data: Uint8Array; contentType: string } | null> {
+  blobName: string,
+  abortSignal?: AbortSignal,
+): Promise<{ data: Uint8Array<ArrayBuffer>; contentType: string } | null> {
   try {
     const client = BlobServiceClient.fromConnectionString(CONNECTION_STRING);
     const blockBlob = client.getContainerClient(CONTAINER).getBlockBlobClient(blobName);
-    const res = await blockBlob.download(0);
+    const res = await blockBlob.download(0, undefined, { abortSignal });
     const data = new Uint8Array(await streamToBuffer(res.readableStreamBody!));
     return { data, contentType: res.contentType ?? "application/octet-stream" };
-  } catch {
-    return null;
+  } catch (err) {
+    if (typeof err === "object" && err !== null && "statusCode" in err && err.statusCode === 404) return null;
+    throw err;
   }
 }
 
